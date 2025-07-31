@@ -22,3 +22,8 @@ variable "slot_type_name" {
   type        = string
   description = "bot's slot type name"
 }
+
+variable "ttl" {
+  type        = number
+  description = "idle_session_ttl_in_seconds"
+}

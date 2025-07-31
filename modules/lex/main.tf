@@ -9,11 +9,12 @@ data "aws_region" "current" {}
 data "aws_caller_identity" "current" {}
 
 resource "aws_lexv2models_bot" "weather_small_talk" {
-  region      = var.region
-  name        = var.bot_name
-  description = "small talk about the weather and how you feel about it"
-  role_arn    = aws_iam_role.lex_bot.arn
-  data_privacy = {
+  region                      = var.region
+  name                        = var.bot_name
+  description                 = "small talk about the weather and how you feel about it"
+  role_arn                    = aws_iam_role.lex_bot.arn
+  idle_session_ttl_in_seconds = var.ttl
+  data_privacy {
     child_directed = false
   }
 }

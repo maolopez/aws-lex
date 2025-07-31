@@ -13,4 +13,5 @@ module "lex" {
   lex_bot_role   = local.lex_bot_role
   lex_bot_policy = local.lex_bot_policy
   slot_type_name = local.slot_type_name
+  ttl            = local.ttl
 }

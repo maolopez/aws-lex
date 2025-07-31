@@ -6,5 +6,5 @@ locals {
   lex_bot_role   = "lbrole-${random_string.suffix.result}"
   lex_bot_policy = "lbpolicy-${random_string.suffix.result}"
   slot_type_name = "stweather_${local.random_suffix}"
-
+  ttl            = 300
 }
