@@ -105,20 +105,35 @@ resource "aws_lex_intent" "weather_small_talk" {
   }
 
   follow_up_prompt {
-    max_attempts = 2
-    message {
-      content      = "Do you hate the weather today?, yes or not"
-      content_type = "PlainText"
-    }
-
-    message {
-      content      = "Do you mind the weather today?, yes or not"
-      content_type = "PlainText"
-    }
-
-    message {
-      content      = "Please, describe the weather today"
-      content_type = "PlainText"
+    prompt {
+      max_attempts = 2
+      response_card = jsonencode({
+        version = 1
+        contentType = "application/vnd.amazonaws.card.generic"
+        genericAttachments = [
+          {
+            title = "How do you feel about the weather today?"
+            buttons = [
+              {
+                text = "I love it"
+                value = "I love it"
+              },
+              {
+                text = "I don't mind it"
+                value = "I don't mind it"
+              },              
+              {
+                text = "I hate it"
+                value = "I hate it"
+              }
+            ]
+          }
+        ]
+      })      
+      message {
+        content      = "Do you love or hate the weather today?"
+        content_type = "PlainText"
+      }
     }
   }
 
@@ -142,14 +157,14 @@ resource "aws_lex_bot" "weather_small_talk" {
 
   clarification_prompt {
     max_attempts = 2
-    messages {
+    message {
       content_type = "PlainText"
       content      = "Sorry, can you please rephrase with your feeling about the weather today?"
     }
   }
 
   abort_statement {
-    messages {
+    message {
       content_type = "PlainText"
       content      = "Sorry, I don't have anything to say about that this time."
     }
