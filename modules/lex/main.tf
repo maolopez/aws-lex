@@ -8,8 +8,53 @@ data "aws_region" "current" {}
 
 data "aws_caller_identity" "current" {}
 
+resource "aws_lex_slot_type" "weather_type" {
+  name        = "WeatherTypeValues"
+  description = "Values for weather type"
 
-# Create an intent for ordering flowers
+  enumeration_value {
+    value    = "sunny"
+    synonyms = ["Sunny", "Clear", "Bright", "Cloudless"]
+  }
+
+  enumeration_value {
+    value    = "cloudy"
+    synonyms = ["Cloudy", "Overcast", "Gloomy"]
+  }
+
+  enumeration_value {
+    value    = "rainy"
+    synonyms = ["Rainy", "Raining", "Showers", "Precipitation"]
+  }
+
+  enumeration_value {
+    value    = "snowy"
+    synonyms = ["Snowy", "Snowing", "Snowfall"]
+  }
+
+  enumeration_value {
+    value    = "windy"
+    synonyms = ["Windy", "Breezy", "Gusty"]
+  }
+
+  enumeration_value {
+    value    = "foggy"
+    synonyms = ["Foggy", "Misty", "Hazy"]
+  }
+
+  enumeration_value {
+    value    = "stormy"
+    synonyms = ["Stormy", "Thunderstorm", "Lightning"]
+  }
+
+  enumeration_value {
+    value    = "partly_cloudy"
+    synonyms = ["Partly Cloudy", "Mostly Cloudy", "Broken Clouds"]
+  }
+}
+
+
+# Create an intent for weather discussion
 resource "aws_lex_intent" "weather_small_talk" {
   name   = var.bot_name
   region = var.region
@@ -19,10 +64,10 @@ resource "aws_lex_intent" "weather_small_talk" {
     "It is too hot and humid, I will faint!",
   ]
 
-  slot_type {
-    name     = "WeatherType"
-
-    priority = 1
+  slot {
+    name      = "WeatherType"
+    slot_type = aws_lex_slot_type.weather_type.name
+    priority  = 1
     value_elicitation_prompt {
       max_attempts = 2
       message {
@@ -43,51 +88,6 @@ resource "aws_lex_intent" "weather_small_talk" {
       "I hate when the weather is {WeatherTypeValues}"
     ]
     slot_constraint = "Optional"
-
-  }
-
-  slot {
-    name = "WeatherTypeValues"
-
-    enumeration_value {
-      value    = "sunny"
-      synonyms = ["Sunny", "Clear", "Bright", "Cloudless"]
-    }
-
-    enumeration_value {
-      value    = "cloudy"
-      synonyms = ["Cloudy", "Overcast", "Gloomy"]
-    }
-
-    enumeration_value {
-      value    = "rainy"
-      synonyms = ["Rainy", "Raining", "Showers", "Precipitation"]
-    }
-
-    enumeration_value {
-      value    = "snowy"
-      synonyms = ["Snowy", "Snowing", "Snowfall"]
-    }
-
-    enumeration_value {
-      value    = "windy"
-      synonyms = ["Windy", "Breezy", "Gusty"]
-    }
-
-    enumeration_value {
-      value    = "foggy"
-      synonyms = ["Foggy", "Misty", "Hazy"]
-    }
-
-    enumeration_value {
-      value    = "stormy"
-      synonyms = ["Stormy", "Thunderstorm", "Lightning"]
-    }
-
-    enumeration_value {
-      value    = "partly_cloudy"
-      synonyms = ["Partly Cloudy", "Mostly Cloudy", "Broken Clouds"]
-    }
   }
 
   fulfillment_activity {
