@@ -1,6 +1,11 @@
 # aws-lex
 terraform deploying AWS Lex and additional related infrastructure
 
+-If you want to use pre-trained Comprehend models for sentiment analysis or entity recognition, you don't need to create a separate Comprehend model. Lex will handle it for you.
+
+
+-If you want to use a custom Comprehend model, you'll need to create and deploy it separately and integrate it with your Lex bot using a Lambda function.
+
 
 INSTRUCTIONS
 ------------------
