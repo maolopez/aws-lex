@@ -66,10 +66,11 @@ resource "aws_lex_intent" "weather_small_talk" {
   ]
 
   slot {
-    name            = "WeatherType"
-    slot_type       = aws_lex_slot_type.weather_type.name
-    priority        = 1
-    slot_constraint = "Required"
+    name              = "WeatherType"
+    slot_type         = aws_lex_slot_type.weather_type.name
+    slot_type_version = aws_lex_slot_type.weather_type.version
+    priority          = 1
+    slot_constraint   = "Required"
     value_elicitation_prompt {
       max_attempts = 2
       message {
@@ -80,10 +81,11 @@ resource "aws_lex_intent" "weather_small_talk" {
   }
 
   slot {
-    description = "The type of weather I like or enjoy"
-    name        = "WeatherLike"
-    slot_type   = aws_lex_slot_type.weather_type.name
-    priority    = 2
+    description       = "The type of weather I like or enjoy"
+    name              = "WeatherLike"
+    slot_type         = aws_lex_slot_type.weather_type.name
+    slot_type_version = aws_lex_slot_type.weather_type.version
+    priority          = 2
 
     sample_utterances = [
       "I love the wheather when it is {WeatherTypeValues}",
