@@ -19,16 +19,15 @@ resource "aws_lex_intent" "weather_small_talk" {
     "It is too hot and humid, I will faint!",
   ]
 
-  slot {
+  slot_type {
     name     = "WeatherType"
-    type     = "WeatherTypeValues"
-    required = true
+
     priority = 1
     value_elicitation_prompt {
       max_attempts = 2
-      messages {
-        content_type = "PlainText"
+      message {
         content      = "What kind of weather you like or enjoy?"
+        content_type = "PlainText"
       }
     }
   }
@@ -43,7 +42,8 @@ resource "aws_lex_intent" "weather_small_talk" {
       "I don't mind if the weather is {WeatherTypeValues}",
       "I hate when the weather is {WeatherTypeValues}"
     ]
-    slot_constrain = "Optional"
+    slot_constraint = "Optional"
+
   }
 
   slot {
