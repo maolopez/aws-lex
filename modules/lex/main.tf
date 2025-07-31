@@ -9,8 +9,9 @@ data "aws_region" "current" {}
 data "aws_caller_identity" "current" {}
 
 resource "aws_lex_slot_type" "weather_type" {
-  name        = "WeatherTypeValues"
-  description = "Values for weather type"
+  name           = "WeatherTypeValues"
+  description    = "Values for weather type"
+  create_version = false
 
   enumeration_value {
     value    = "sunny"
@@ -56,7 +57,7 @@ resource "aws_lex_slot_type" "weather_type" {
 
 # Create an intent for weather discussion
 resource "aws_lex_intent" "weather_small_talk" {
-  name   = var.bot_name  #expected value of name to match regular expression "^([A-Za-z]_?)+$"
+  name   = var.bot_name #expected value of name to match regular expression "^([A-Za-z]_?)+$"
   region = var.region
 
   sample_utterances = [
@@ -109,7 +110,7 @@ resource "aws_lex_intent" "weather_small_talk" {
       content      = "Okay, let's not talk about weather today."
       content_type = "PlainText"
     }
-  }  
+  }
 
   follow_up_prompt {
     prompt {
@@ -178,8 +179,8 @@ resource "aws_lex_bot" "weather_small_talk" {
     }
   }
 
-  child_directed               = false
-  description                  = "small talk about the weather and how you feel about it"
+  child_directed              = false
+  description                 = "small talk about the weather and how you feel about it"
   idle_session_ttl_in_seconds = var.iddle_time
-  detect_sentiment             = var.detect_sentiment
+  detect_sentiment            = var.detect_sentiment
 }
