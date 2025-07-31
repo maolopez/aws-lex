@@ -180,6 +180,6 @@ resource "aws_lex_bot" "weather_small_talk" {
 
   child_directed               = false
   description                  = "small talk about the weather and how you feel about it"
-  iddle_session_ttl_in_seconds = var.iddle_time
+  idle_session_ttl_in_seconds = var.iddle_time
   detect_sentiment             = var.detect_sentiment
 }
