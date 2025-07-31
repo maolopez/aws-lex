@@ -7,4 +7,11 @@ module.lex.aws_lex_intent.weather_small_talk: Creating...
 â   on ../modules/lex/main.tf line 58, in resource "aws_lex_intent" "weather_small_talk":
 â   58: resource "aws_lex_intent" "weather_small_talk" {
 ---
-
+module.lex.aws_lex_bot.weather_small_talk: Creating...
+â·
+â Error: creating Lex Bot (WeatherSmallTalk_alhny): operation error Lex Model Building Service: PutBot, https response error StatusCode: 412, RequestID: e6d3b711-0b3e-4a15-94c3-fbc3d2039bd1, PreconditionFailedException: Amazon Lex V1 will reach end of life on September 15, 2025. New bot creations for Lex V1 are now disabled. If you are trying to update 'WeatherSmallTalk_alhny' you must specify checksum.
+â 
+â   with module.lex.aws_lex_bot.weather_small_talk,
+â   on ../modules/lex/main.tf line 160, in resource "aws_lex_bot" "weather_small_talk":
+â  160: resource "aws_lex_bot" "weather_small_talk" {
+---    
