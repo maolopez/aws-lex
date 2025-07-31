@@ -104,6 +104,13 @@ resource "aws_lex_intent" "weather_small_talk" {
     }
   }
 
+  rejection_statement {
+    message {
+      content      = "Okay, let's not talk about weather today."
+      content_type = "PlainText"
+    }
+  }  
+
   follow_up_prompt {
     prompt {
       max_attempts = 2
