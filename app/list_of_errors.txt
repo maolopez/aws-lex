@@ -1,0 +1,10 @@
+---
+module.lex.aws_lex_intent.weather_small_talk: Creating...
+â·
+â Error: creating Lex Intent (WeatherSmallTalk_alhny): operation error Lex Model Building Service: PutIntent, https response error StatusCode: 400, RequestID: d6d0f09e-ae7c-434a-95ff-cc0b9ba3350a, BadRequestException: A slot type version has not been specified for the slot "WeatherLike" in intent "WeatherSmallTalk_alhny". Slots that use custom slot types must specify a slot type version.
+â 
+â   with module.lex.aws_lex_intent.weather_small_talk,
+â   on ../modules/lex/main.tf line 58, in resource "aws_lex_intent" "weather_small_talk":
+â   58: resource "aws_lex_intent" "weather_small_talk" {
+---
+

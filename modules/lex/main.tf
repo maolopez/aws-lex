@@ -1,0 +1,188 @@
+provider "aws" {
+  region = var.region
+}
+
+data "aws_partition" "current" {}
+
+data "aws_region" "current" {}
+
+data "aws_caller_identity" "current" {}
+
+resource "aws_lex_slot_type" "weather_type" {
+  name           = "WeatherTypeValues"
+  description    = "Values for weather type"
+  create_version = false
+
+  enumeration_value {
+    value    = "sunny"
+    synonyms = ["Sunny", "Clear", "Bright", "Cloudless"]
+  }
+
+  enumeration_value {
+    value    = "cloudy"
+    synonyms = ["Cloudy", "Overcast", "Gloomy"]
+  }
+
+  enumeration_value {
+    value    = "rainy"
+    synonyms = ["Rainy", "Raining", "Showers", "Precipitation"]
+  }
+
+  enumeration_value {
+    value    = "snowy"
+    synonyms = ["Snowy", "Snowing", "Snowfall"]
+  }
+
+  enumeration_value {
+    value    = "windy"
+    synonyms = ["Windy", "Breezy", "Gusty"]
+  }
+
+  enumeration_value {
+    value    = "foggy"
+    synonyms = ["Foggy", "Misty", "Hazy"]
+  }
+
+  enumeration_value {
+    value    = "stormy"
+    synonyms = ["Stormy", "Thunderstorm", "Lightning"]
+  }
+
+  enumeration_value {
+    value    = "partly_cloudy"
+    synonyms = ["Partly Cloudy", "Mostly Cloudy", "Broken Clouds"]
+  }
+}
+
+
+# Create an intent for weather discussion
+resource "aws_lex_intent" "weather_small_talk" {
+  name   = var.bot_name #expected value of name to match regular expression "^([A-Za-z]_?)+$"
+  region = var.region
+
+  sample_utterances = [
+    "It is rainy and cold, I hate it!",
+    "It is too hot and humid, I will faint!",
+  ]
+
+  slot {
+    name              = "WeatherType"
+    slot_type         = aws_lex_slot_type.weather_type.name
+    slot_type_version = aws_lex_slot_type.weather_type.version
+    priority          = 1
+    slot_constraint   = "Required"
+    value_elicitation_prompt {
+      max_attempts = 2
+      message {
+        content      = "What kind of weather you like or enjoy?"
+        content_type = "PlainText"
+      }
+    }
+  }
+
+  slot {
+    description       = "The type of weather I like or enjoy"
+    name              = "WeatherLike"
+    slot_type         = aws_lex_slot_type.weather_type.name
+    slot_type_version = aws_lex_slot_type.weather_type.version
+    priority          = 2
+
+    sample_utterances = [
+      "I love the wheather when it is {WeatherTypeValues}",
+      "I don't mind if the weather is {WeatherTypeValues}",
+      "I hate when the weather is {WeatherTypeValues}"
+    ]
+    slot_constraint = "Optional"
+  }
+
+  fulfillment_activity {
+    type = "ReturnIntent"
+  }
+
+  confirmation_prompt {
+    max_attempts = 2
+    message {
+      content      = "Do you love the weather today?, yes or not"
+      content_type = "PlainText"
+    }
+  }
+
+  rejection_statement {
+    message {
+      content      = "Okay, let's not talk about weather today."
+      content_type = "PlainText"
+    }
+  }
+
+  follow_up_prompt {
+    prompt {
+      max_attempts = 2
+      response_card = jsonencode({
+        version     = 1
+        contentType = "application/vnd.amazonaws.card.generic"
+        genericAttachments = [
+          {
+            title = "How do you feel about the weather today?"
+            buttons = [
+              {
+                text  = "I love it"
+                value = "I love it"
+              },
+              {
+                text  = "I don't mind it"
+                value = "I don't mind it"
+              },
+              {
+                text  = "I hate it"
+                value = "I hate it"
+              }
+            ]
+          }
+        ]
+      })
+      message {
+        content      = "Do you love or hate the weather today?"
+        content_type = "PlainText"
+      }
+    }
+    rejection_statement {
+      message {
+        content      = "I feel different about the weather today, bye!"
+        content_type = "PlainText"
+      }
+    }
+  }
+}
+
+
+
+# Create the Lex bot
+resource "aws_lex_bot" "weather_small_talk" {
+  name   = var.bot_name
+  region = var.region
+
+  intent {
+    intent_name    = aws_lex_intent.weather_small_talk.name
+    intent_version = aws_lex_intent.weather_small_talk.version
+  }
+
+  clarification_prompt {
+    max_attempts = 2
+    message {
+      content_type = "PlainText"
+      content      = "Sorry, can you please rephrase with your feeling about the weather today?"
+    }
+  }
+
+  abort_statement {
+    message {
+      content_type = "PlainText"
+      content      = "Sorry, I don't have anything to say about that this time."
+    }
+  }
+
+  child_directed              = false
+  description                 = "small talk about the weather and how you feel about it"
+  idle_session_ttl_in_seconds = var.iddle_time
+  detect_sentiment            = var.detect_sentiment
+}

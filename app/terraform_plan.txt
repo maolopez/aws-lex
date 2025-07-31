@@ -1,0 +1,266 @@
+module.lex.data.aws_partition.current: Reading...
+module.lex.data.aws_region.current: Reading...
+module.lex.data.aws_caller_identity.current: Reading...
+module.lex.data.aws_region.current: Read complete after 0s [id=us-east-1]
+module.lex.data.aws_partition.current: Read complete after 0s [id=aws]
+module.lex.data.aws_caller_identity.current: Read complete after 0s [id=271271282869]
+
+Terraform used the selected providers to generate the following execution plan. Resource actions are indicated with the following symbols:
+  + create
+
+Terraform will perform the following actions:
+
+  # random_string.suffix will be created
+  + resource "random_string" "suffix" {
+      + id          = (known after apply)
+      + length      = 5
+      + lower       = true
+      + min_lower   = 0
+      + min_numeric = 0
+      + min_special = 0
+      + min_upper   = 0
+      + number      = true
+      + numeric     = true
+      + result      = (known after apply)
+      + special     = false
+      + upper       = false
+    }
+
+  # module.lex.aws_lex_bot.weather_small_talk will be created
+  + resource "aws_lex_bot" "weather_small_talk" {
+      + arn                             = (known after apply)
+      + checksum                        = (known after apply)
+      + child_directed                  = false
+      + create_version                  = false
+      + created_date                    = (known after apply)
+      + description                     = "small talk about the weather and how you feel about it"
+      + detect_sentiment                = true
+      + enable_model_improvements       = false
+      + failure_reason                  = (known after apply)
+      + id                              = (known after apply)
+      + idle_session_ttl_in_seconds     = 600
+      + last_updated_date               = (known after apply)
+      + locale                          = "en-US"
+      + name                            = (known after apply)
+      + nlu_intent_confidence_threshold = 0
+      + process_behavior                = "SAVE"
+      + region                          = "us-east-1"
+      + status                          = (known after apply)
+      + version                         = (known after apply)
+      + voice_id                        = (known after apply)
+
+      + abort_statement {
+          + message {
+              + content      = "Sorry, I don't have anything to say about that this time."
+              + content_type = "PlainText"
+            }
+        }
+
+      + clarification_prompt {
+          + max_attempts = 2
+
+          + message {
+              + content      = "Sorry, can you please rephrase with your feeling about the weather today?"
+              + content_type = "PlainText"
+            }
+        }
+
+      + intent {
+          + intent_name    = (known after apply)
+          + intent_version = (known after apply)
+        }
+    }
+
+  # module.lex.aws_lex_intent.weather_small_talk will be created
+  + resource "aws_lex_intent" "weather_small_talk" {
+      + arn               = (known after apply)
+      + checksum          = (known after apply)
+      + create_version    = false
+      + created_date      = (known after apply)
+      + id                = (known after apply)
+      + last_updated_date = (known after apply)
+      + name              = (known after apply)
+      + region            = "us-east-1"
+      + sample_utterances = [
+          + "It is rainy and cold, I hate it!",
+          + "It is too hot and humid, I will faint!",
+        ]
+      + version           = (known after apply)
+
+      + confirmation_prompt {
+          + max_attempts = 2
+
+          + message {
+              + content      = "Do you love the weather today?, yes or not"
+              + content_type = "PlainText"
+            }
+        }
+
+      + follow_up_prompt {
+          + prompt {
+              + max_attempts  = 2
+              + response_card = jsonencode(
+                    {
+                      + contentType        = "application/vnd.amazonaws.card.generic"
+                      + genericAttachments = [
+                          + {
+                              + buttons = [
+                                  + {
+                                      + text  = "I love it"
+                                      + value = "I love it"
+                                    },
+                                  + {
+                                      + text  = "I don't mind it"
+                                      + value = "I don't mind it"
+                                    },
+                                  + {
+                                      + text  = "I hate it"
+                                      + value = "I hate it"
+                                    },
+                                ]
+                              + title   = "How do you feel about the weather today?"
+                            },
+                        ]
+                      + version            = 1
+                    }
+                )
+
+              + message {
+                  + content      = "Do you love or hate the weather today?"
+                  + content_type = "PlainText"
+                }
+            }
+          + rejection_statement {
+              + message {
+                  + content      = "I feel different about the weather today, bye!"
+                  + content_type = "PlainText"
+                }
+            }
+        }
+
+      + fulfillment_activity {
+          + type = "ReturnIntent"
+        }
+
+      + rejection_statement {
+          + message {
+              + content      = "Okay, let's not talk about weather today."
+              + content_type = "PlainText"
+            }
+        }
+
+      + slot {
+          + name              = "WeatherType"
+          + priority          = 1
+          + sample_utterances = []
+          + slot_constraint   = "Required"
+          + slot_type         = "WeatherTypeValues"
+            # (3 unchanged attributes hidden)
+
+          + value_elicitation_prompt {
+              + max_attempts  = 2
+                # (1 unchanged attribute hidden)
+
+              + message {
+                  + content      = "What kind of weather you like or enjoy?"
+                  + content_type = "PlainText"
+                }
+            }
+        }
+      + slot {
+          + description       = "The type of weather I like or enjoy"
+          + name              = "WeatherLike"
+          + priority          = 2
+          + sample_utterances = [
+              + "I love the wheather when it is {WeatherTypeValues}",
+              + "I don't mind if the weather is {WeatherTypeValues}",
+              + "I hate when the weather is {WeatherTypeValues}",
+            ]
+          + slot_constraint   = "Optional"
+          + slot_type         = "WeatherTypeValues"
+            # (2 unchanged attributes hidden)
+        }
+    }
+
+  # module.lex.aws_lex_slot_type.weather_type will be created
+  + resource "aws_lex_slot_type" "weather_type" {
+      + checksum                 = (known after apply)
+      + create_version           = false
+      + created_date             = (known after apply)
+      + description              = "Values for weather type"
+      + id                       = (known after apply)
+      + last_updated_date        = (known after apply)
+      + name                     = "WeatherTypeValues"
+      + region                   = "us-east-1"
+      + value_selection_strategy = "ORIGINAL_VALUE"
+      + version                  = (known after apply)
+
+      + enumeration_value {
+          + synonyms = [
+              + "Breezy",
+              + "Gusty",
+              + "Windy",
+            ]
+          + value    = "windy"
+        }
+      + enumeration_value {
+          + synonyms = [
+              + "Bright",
+              + "Clear",
+              + "Cloudless",
+              + "Sunny",
+            ]
+          + value    = "sunny"
+        }
+      + enumeration_value {
+          + synonyms = [
+              + "Broken Clouds",
+              + "Mostly Cloudy",
+              + "Partly Cloudy",
+            ]
+          + value    = "partly_cloudy"
+        }
+      + enumeration_value {
+          + synonyms = [
+              + "Cloudy",
+              + "Gloomy",
+              + "Overcast",
+            ]
+          + value    = "cloudy"
+        }
+      + enumeration_value {
+          + synonyms = [
+              + "Foggy",
+              + "Hazy",
+              + "Misty",
+            ]
+          + value    = "foggy"
+        }
+      + enumeration_value {
+          + synonyms = [
+              + "Lightning",
+              + "Stormy",
+              + "Thunderstorm",
+            ]
+          + value    = "stormy"
+        }
+      + enumeration_value {
+          + synonyms = [
+              + "Precipitation",
+              + "Raining",
+              + "Rainy",
+              + "Showers",
+            ]
+          + value    = "rainy"
+        }
+      + enumeration_value {
+          + synonyms = [
+              + "Snowfall",
+              + "Snowing",
+              + "Snowy",
+            ]
+          + value    = "snowy"
+        }
+    }
+
+Plan: 4 to add, 0 to change, 0 to destroy.
