@@ -65,9 +65,9 @@ resource "aws_lex_intent" "weather_small_talk" {
   ]
 
   slot {
-    name      = "WeatherType"
-    slot_type = aws_lex_slot_type.weather_type.name
-    priority  = 1
+    name            = "WeatherType"
+    slot_type       = aws_lex_slot_type.weather_type.name
+    priority        = 1
     slot_constraint = "Required"
     value_elicitation_prompt {
       max_attempts = 2
@@ -81,7 +81,7 @@ resource "aws_lex_intent" "weather_small_talk" {
   slot {
     description = "The type of weather I like or enjoy"
     name        = "WeatherLike"
-    slot_type = aws_lex_slot_type.weather_type.name
+    slot_type   = aws_lex_slot_type.weather_type.name
     priority    = 2
 
     sample_utterances = [
@@ -108,42 +108,43 @@ resource "aws_lex_intent" "weather_small_talk" {
     prompt {
       max_attempts = 2
       response_card = jsonencode({
-        version = 1
+        version     = 1
         contentType = "application/vnd.amazonaws.card.generic"
         genericAttachments = [
           {
             title = "How do you feel about the weather today?"
             buttons = [
               {
-                text = "I love it"
+                text  = "I love it"
                 value = "I love it"
               },
               {
-                text = "I don't mind it"
+                text  = "I don't mind it"
                 value = "I don't mind it"
-              },              
+              },
               {
-                text = "I hate it"
+                text  = "I hate it"
                 value = "I hate it"
               }
             ]
           }
         ]
-      })      
+      })
       message {
         content      = "Do you love or hate the weather today?"
         content_type = "PlainText"
       }
     }
-  }
-
-  rejection_statement {
-    message {
-      content      = "I feel different about the weather today, bye!"
-      content_type = "PlainText"
+    rejection_statement {
+      message {
+        content      = "I feel different about the weather today, bye!"
+        content_type = "PlainText"
+      }
     }
   }
 }
+
+
 
 # Create the Lex bot
 resource "aws_lex_bot" "weather_small_talk" {
