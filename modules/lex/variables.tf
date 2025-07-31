@@ -8,12 +8,17 @@ variable "bot_name" {
   description = "The unique bot name"
 }
 
-variable "iddle_time" {
-  type        = number
-  description = "Time in seconds to retain the data gathered in a conversation. Between 60 and 86400"
+variable "lex_bot_role" {
+  type        = string
+  description = "The role for using with the bot"
 }
 
-variable "detect_sentiment" {
-  type        = bool
-  description = "To detect sentiment will hook to Comprehend AWS pre-trained models"
+variable "lex_bot_policy" {
+  type        = string
+  description = "The policy to use with the bot's role"
+}
+
+variable "slot_type_name" {
+  type        = string
+  description = "bot's slot type name"
 }
