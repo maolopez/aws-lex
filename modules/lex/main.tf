@@ -56,7 +56,7 @@ resource "aws_lex_slot_type" "weather_type" {
 
 # Create an intent for weather discussion
 resource "aws_lex_intent" "weather_small_talk" {
-  name   = var.bot_name
+  name   = var.bot_name  #expected value of name to match regular expression "^([A-Za-z]_?)+$"
   region = var.region
 
   sample_utterances = [
